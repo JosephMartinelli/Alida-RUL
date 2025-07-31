@@ -81,10 +81,11 @@ jobs:
           images: ${{ secrets.DOCKER_USERNAME }}/my-image
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v6
+        id: push
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         with:
-            push: ${{ github.event_name != 'pull_request' }}
-            tags: ${{ steps.meta.outputs.tags }}
-            annotations: ${{ steps.meta.outputs.annotations }}
-            provenance: true
-            sbom: true
+          context: src/preprocessing
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          provenance: true
+          sbom: true
