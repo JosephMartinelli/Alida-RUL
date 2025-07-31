@@ -140,7 +140,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: ${{ secrets.DOCKER_USERNAME }}/latest
+          images: ${{ secrets.DOCKER_USERNAME }}/my-image
 
       - name: Build and push Docker image
         id: push
@@ -148,12 +148,12 @@ jobs:
         with:
           context: src/preprocessing
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/latest:1.0
+          tags: ${{ secrets.DOCKER_USERNAME }}/my-image:1.0
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v2
         with:
-          subject-name: ${{ secrets.DOCKER_USERNAME }}/latest:1.0
+          subject-name: docker.io/${{ secrets.DOCKER_USERNAME }}/my-image:1.0
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
