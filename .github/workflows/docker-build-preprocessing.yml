@@ -87,5 +87,3 @@ jobs:
           context: src/preprocessing
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
-          provenance: true
-          sbom: true
