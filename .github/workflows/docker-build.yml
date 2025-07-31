@@ -2,11 +2,11 @@ name: Docker Build and Push
 
 on:
   push:
-    branches: [ master ]
+    branches: [ regressor ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
   pull_request:
-    branches: [ master ]
+    branches: [ regressor ]
 
 env:
   # Use docker.io for Docker Hub if empty
