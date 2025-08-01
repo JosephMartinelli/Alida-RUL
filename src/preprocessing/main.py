@@ -125,15 +125,16 @@ def download_kaggle_dataset_to_bucket(
 
 if __name__ == "__main__":
     logging.warning(
-        "output_minio_url: %s,output_minio_bucket: %s,output_dataset: %s",
-        args.output_minio_url,
-        args.output_minio_bucket,
-        args.output_dataset,
+        "input_folder: %s,input_bucket: %s,bucket_access_key: %s, bucket_secret_key: %s",
+        args.input_folder,
+        args.input_bucket,
+        args.bucket_access_key,
+        args.bucket_secret_key,
     )
-    download_kaggle_dataset_to_bucket(
-        minio_url=args.output_minio_url,
-        bucket_name=args.output_minio_bucket,
-        output_folder=args.output_dataset,
-        access_key=args.output_access_key,
-        secret_key=args.output_secret_key,
-    )
+    # download_kaggle_dataset_to_bucket(
+    #     minio_url=args.output_minio_url,
+    #     bucket_name=args.output_minio_bucket,
+    #     output_folder=args.output_dataset,
+    #     access_key=args.output_access_key,
+    #     secret_key=args.output_secret_key,
+    # )

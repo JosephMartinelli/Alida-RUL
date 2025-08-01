@@ -1,0 +1,65 @@
+{
+  "accessLevel": null,
+  "category": null,
+  "area": null,
+  "description": "",
+  "framework": {
+    "id": 6,
+    "imageUrl": "https://cdn.alidalab.it/static/images/frameworks/python_logo.png",
+    "name": "Python",
+    "version": "3"
+  },
+  "id": null,
+  "label": null,
+  "metrics": null,
+  "mode": "BATCH",
+  "models": null,
+  "name": "kaggle-download",
+  "organization": null,
+  "owner": null,
+  "properties": [
+    {
+      "description": "Bucket's folder to save the data to",
+      "mandatory": true,
+      "type": "application",
+      "defaultValue": null,
+      "key": "input_folder",
+      "valueType": "STRING",
+      "invisible": false
+    },
+    {
+      "description": "Bucket to save the data to",
+      "mandatory": true,
+      "type": "application",
+      "defaultValue": null,
+      "key": "input_bucket",
+      "valueType": "STRING",
+      "invisible": false
+    },
+    {
+      "description": "bucket access key",
+      "mandatory": true,
+      "type": "application",
+      "defaultValue": null,
+      "key": "bucket_access_key",
+      "valueType": "STRING",
+      "invisible": false
+    },
+    {
+      "description": "bucket secret key",
+      "mandatory": true,
+      "type": "application",
+      "defaultValue": null,
+      "key": "bucket_secret_key",
+      "valueType": "STRING",
+      "invisible": false
+    }
+  ],
+  "ref": null,
+  "statusModel": null,
+  "tags": [],
+  "url": "docker://docker.hub.com/giuseppe645/my-image:regressor",
+  "version": "1",
+  "notes": null,
+  "markDown": null
+}
