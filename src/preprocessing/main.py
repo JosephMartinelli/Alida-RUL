@@ -74,7 +74,7 @@ def sink(local_folder, minio_url, bucket_name, minio_path, access_key, secret_ke
             object_name = os.path.join(minio_path, relative_path).replace(
                 "\\", "/"
             )  # for Windows compatibility
-            logging.info(
+            logging.warning(
                 f"Uploading {local_file_path} to {bucket_name}/{object_name} ..."
             )
             try:
@@ -83,9 +83,9 @@ def sink(local_folder, minio_url, bucket_name, minio_path, access_key, secret_ke
                     object_name,
                     local_file_path,
                 )
-                logging.info(f"Uploaded: {object_name}")
+                logging.warning(f"Uploaded: {object_name}")
             except S3Error as e:
-                logging.warn(f"Failed to upload {object_name}: {e}")
+                logging.warning(f"Failed to upload {object_name}: {e}")
 
 
 def download_kaggle_dataset_to_bucket(
@@ -124,6 +124,12 @@ def download_kaggle_dataset_to_bucket(
 
 
 if __name__ == "__main__":
+    logging.warning(
+        "output_minio_url: %s,output_minio_bucket: %s,output_dataset: %s",
+        args.output_minio_url,
+        args.output_minio_bucket,
+        args.output_dataset,
+    )
     download_kaggle_dataset_to_bucket(
         minio_url=args.output_minio_url,
         bucket_name=args.output_minio_bucket,
