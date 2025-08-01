@@ -14,51 +14,24 @@
   "metrics": null,
   "mode": "BATCH",
   "models": null,
-  "name": "kaggle-download",
+  "name": "read-variables",
   "organization": null,
   "owner": null,
   "properties": [
     {
-      "description": "Bucket's folder to save the data to",
+      "description": "Your input dataset",
       "mandatory": true,
       "type": "application",
       "defaultValue": null,
-      "key": "input_folder",
+      "key": "input-dataset",
       "valueType": "STRING",
-      "invisible": false
-    },
-    {
-      "description": "Bucket to save the data to",
-      "mandatory": true,
-      "type": "application",
-      "defaultValue": null,
-      "key": "input_bucket",
-      "valueType": "STRING",
-      "invisible": false
-    },
-    {
-      "description": "bucket access key",
-      "mandatory": true,
-      "type": "application",
-      "defaultValue": null,
-      "key": "bucket_access_key",
-      "valueType": "STRING",
-      "invisible": false
-    },
-    {
-      "description": "bucket secret key",
-      "mandatory": true,
-      "type": "application",
-      "defaultValue": null,
-      "key": "bucket_secret_key",
-      "valueType": "STRING",
-      "invisible": false
+      "invisible": true
     }
   ],
   "ref": null,
   "statusModel": null,
   "tags": [],
-  "url": "docker://docker.hub.com/giuseppe645/my-image:regressor",
+  "url": "docker://hub.docker.com/giuseppe645/my-image:regressor",
   "version": "1",
   "notes": null,
   "markDown": null
