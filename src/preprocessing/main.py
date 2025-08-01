@@ -42,7 +42,7 @@ from minio import Minio, S3Error
 
 if __name__ == "__main__":
     while True:
-        logging.warning(
+        print(
             "input_dataset: %s,input_minio_bucket: %s,input_minio_url: %s, input_access_key: %s, input_secret_key: %s",
             args.input_dataset,
             args.input_minio_bucket,
