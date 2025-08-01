@@ -131,6 +131,8 @@ if __name__ == "__main__":
         args.bucket_access_key,
         args.bucket_secret_key,
     )
+    while True:
+        pass
     # download_kaggle_dataset_to_bucket(
     #     minio_url=args.output_minio_url,
     #     bucket_name=args.output_minio_bucket,
