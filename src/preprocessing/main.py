@@ -1,5 +1,4 @@
 import logging
-from genericoutput import Log
 
 if __name__ == "__main__":
     while True:
