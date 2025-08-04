@@ -80,4 +80,3 @@ if __name__ == "__main__":
     # print(args.input_access_key, flush=True)
     # print(args.input_secret_key, flush=True)
     print("yelp")
-    raise EOFError
