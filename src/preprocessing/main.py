@@ -7,6 +7,7 @@ import requests
 import tempfile
 import zipfile
 import logging
+from genericoutput import Log
 
 from minio import Minio, S3Error
 
@@ -42,11 +43,11 @@ from minio import Minio, S3Error
 
 if __name__ == "__main__":
     while True:
-        logging.warning(
+        Log(
             "input_dataset: %s,input_minio_bucket: %s,input_minio_url: %s, input_access_key: %s, input_secret_key: %s",
             args.input_dataset,
             args.input_minio_bucket,
             args.input_minio_url,
             args.input_access_key,
             args.input_secret_key,
-        )
+        ).send()
