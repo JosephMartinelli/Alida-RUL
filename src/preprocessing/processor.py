@@ -1,5 +1,6 @@
 from minio import Minio
-from arguments import args
+
+# from arguments import args
 import pandas as pd
 import requests
 
@@ -31,18 +32,19 @@ def minio_ls(
 
 def process():
 
-    storage_options = {
-        "key": args.input_access_key,
-        "secret": args.input_secret_key,
-        "client_kwargs": {"endpoint_url": f"{args.input_minio_url}"},
-    }
-    file_path = minio_ls(
-        args.input_minio_url,
-        args.input_access_key,
-        args.input_secret_key,
-        args.input_minio_bucket,
-        args.input_dataset,
-        ".csv",
-    )
+    # storage_options = {
+    #     "key": args.input_access_key,
+    #     "secret": args.input_secret_key,
+    #     "client_kwargs": {"endpoint_url": f"{args.input_minio_url}"},
+    # }
+    # file_path = minio_ls(
+    #     args.input_minio_url,
+    #     args.input_access_key,
+    #     args.input_secret_key,
+    #     args.input_minio_bucket,
+    #     args.input_dataset,
+    #     ".csv",
+    # )
     # dataset = pd.read_csv(file_path, storage_options=storage_options)
-    return file_path[0].describe()
+    # return file_path[0].describe()
+    return
