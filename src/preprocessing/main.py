@@ -11,4 +11,5 @@ if __name__ == "__main__":
         #     args.input_access_key,
         #     args.input_secret_key,
         # )
-        logging.warn("Printing to docker stream")
+        logging.warn("Printing to docker stream", flush=True)
+        print("new version", flush=True)
