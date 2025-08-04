@@ -27,6 +27,5 @@ parser.add_argument(
     type=str,
     required=True,
 )
-parser.add_argument("--output-dataset.use_ssl", dest="use_ssl", type=str, default=False)
 
 args, unknown = parser.parse_known_args()
