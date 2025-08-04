@@ -73,12 +73,9 @@ def download_kaggle_dataset_to_bucket(
 
 
 if __name__ == "__main__":
-    logging.warn(
-        "%s,%s,%s,%s,%s",
-        minio_url=args.input_minio_url,
-        bucket_name=args.input_minio_bucket,
-        output_folder=args.input_dataset,
-        access_key=args.input_access_key,
-        secret_key=args.input_secret_key,
-    )
+    print(args.input_minio_url, flush=True)
+    print(args.input_minio_bucket, flush=True)
+    print(args.input_dataset, flush=True)
+    print(args.input_access_key, flush=True)
+    print(args.input_secret_key, flush=True)
     raise EOFError
