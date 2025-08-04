@@ -4,7 +4,8 @@ import requests
 import os
 import tempfile
 import zipfile
-from arguments import args
+
+# from arguments import args
 
 
 def sink(local_folder, minio_url, bucket_name, minio_path, access_key, secret_key):
@@ -73,9 +74,10 @@ def download_kaggle_dataset_to_bucket(
 
 
 if __name__ == "__main__":
-    print(args.input_minio_url, flush=True)
-    print(args.input_minio_bucket, flush=True)
-    print(args.input_dataset, flush=True)
-    print(args.input_access_key, flush=True)
-    print(args.input_secret_key, flush=True)
+    # print(args.input_minio_url, flush=True)
+    # print(args.input_minio_bucket, flush=True)
+    # print(args.input_dataset, flush=True)
+    # print(args.input_access_key, flush=True)
+    # print(args.input_secret_key, flush=True)
+    print("yelp")
     raise EOFError
