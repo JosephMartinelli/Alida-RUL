@@ -7,4 +7,4 @@ COPY .. .
 RUN uv init
 RUN uv add -r ./requirements.txt
 
-CMD [".venv/bin/python3", "./main.py"]
+ENTRYPOINT [".venv/bin/python3", "./main.py", "$@"]
