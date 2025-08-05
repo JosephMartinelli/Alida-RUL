@@ -10,3 +10,6 @@ wheels/
 .venv
 /nasa-cmaps/processed/
 /nasa-cmaps/CMaps/
+src/config.env
+src/Minio_folder
+src/docker-compose-dev.yaml
