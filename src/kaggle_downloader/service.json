@@ -1,0 +1,44 @@
+{
+  "name": "preprocesser",
+  "version": "1.0.0",
+  "accessLevel": "PUBLIC",
+  "description": "Saves dataset from kube volume to minio.",
+  "area": "PREPARATION",
+  "framework": {
+    "id": 6,
+    "imageUrl": "https://cdn.alidalab.it/static/images/frameworks/python_logo.png",
+    "name": "Python",
+    "version": "3"
+  },
+  "mode": "BATCH",
+  "properties": [
+    {
+      "description": "Your input dataset",
+      "mandatory": true,
+      "type": "application",
+      "defaultValue": null,
+      "key": "input-dataset",
+      "valueType": "STRING",
+      "invisible": true
+    },
+    {
+      "description": "Your output dataset",
+      "mandatory": true,
+      "type": "application",
+      "defaultValue": null,
+      "key": "output-dataset",
+      "valueType": "STRING",
+      "invisible": true
+    },
+    {
+      "description": "kaggle-url",
+      "mandatory": true,
+      "type": "application",
+      "defaultValue": null,
+      "key": "kaggle_url",
+      "valueType": "STRING",
+      "invisible": false
+    }
+  ],
+  "url": "docker://docker.io/giuseppe645/my-image:downloader"
+}

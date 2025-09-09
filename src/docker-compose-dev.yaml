@@ -1,0 +1,37 @@
+services:
+  minio:
+    tty: true
+    container_name: "ALIDA-minio"
+    image: quay.io/minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - "./Minio_folder:/data"
+      - "./config.env:/etc/config.env"
+    environment:
+      MINIO_CONFIG_ENV_FILE: "/etc/config.env"
+    command: server /data --console-address ":9001"
+  downloader:
+    container_name: "kaggle-downloader"
+    build: kaggle_downloader/.
+    ports:
+      - "8000:8000"
+    command: >
+      --output-dataset=gmartinelli/Cmaps/raw
+      --output-dataset.minio_bucket=alida
+      --output-dataset.minIO_URL=ALIDA-minio:9000
+      --output-dataset.minIO_ACCESS_KEY=admin
+      --output-dataset.minIO_SECRET_KEY=adminadmin
+      --kaggle_url=https://www.kaggle.com/api/v1/datasets/download/behrad3d/nasa-cmaps
+  preprocessor:
+    container_name: "preprocessor"
+    build: turbofan-preprocesser/.
+    ports:
+      - "8000:8000"
+    command: >
+      --input-dataset=gmartinelli/Cmaps/raw
+      --input-dataset.minio_bucket=alida
+      --input-dataset.minIO_URL=ALIDA-minio:9000
+      --input-dataset.minIO_ACCESS_KEY=admin
+      --input-dataset.minIO_SECRET_KEY=adminadmin
