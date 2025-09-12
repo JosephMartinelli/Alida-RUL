@@ -67,23 +67,22 @@ def preprocess_and_save(
 ) -> None:
     for df_key in dfs.keys():
         for df_type in dfs[df_key].keys():
-            print(f"Analyzing {df_type}_{df_key}")
+            logging.info(f"Analyzing {df_type}_{df_key}")
             cleaned_df_type = clean_dataframe(dfs[df_key][df_type], args.show_plots)
 
             # We define RUL as the number of remaining life cycles of a unit until failure
             # The training data provided by the CMAPS dataset contains engine data from run-to-failure
             # so the RUL will be the last cycle recorded (which is the max) minus the current cycle
             if df_type == "train":
-                cleaned_df_type["RUL"] = (
-                    cleaned_df_type.groupby("unit_number")["time_in_cycles"].transform(
-                        "max"
-                    )
-                    - cleaned_df_type["time_in_cycles"]
+                cleaned_df_type["total_lifetime"] = cleaned_df_type.groupby(
+                    "unit_number"
+                )["time_in_cycles"].transform("max")
+                cleaned_df_type["life_ratio"] = (
+                    cleaned_df_type["time_in_cycles"]
+                    / cleaned_df_type["total_lifetime"]
                 )
-                cleaned_df_type["life_ratio"] = cleaned_df_type["time_in_cycles"] / (
-                    cleaned_df_type.groupby("unit_number")["time_in_cycles"].transform(
-                        "max"
-                    )
+                cleaned_df_type["RUL"] = (
+                    cleaned_df_type["total_lifetime"]
                     - cleaned_df_type["time_in_cycles"]
                 )
             # On the other hand the test set is truncated, where for each unit are shown the cycles up to some
@@ -98,13 +97,20 @@ def preprocess_and_save(
                     )
                 )
                 cleaned_df_type["eol"] = cleaned_df_type["unit_number"].map(rul_map)
-                cleaned_df_type["life_ratio"] = cleaned_df_type["time_in_cycles"] / (
+                cleaned_df_type["total_lifetime"] = (
                     cleaned_df_type.groupby("unit_number")["time_in_cycles"].transform(
                         "max"
                     )
                     + cleaned_df_type["eol"]
                 )
-                cleaned_df_type.drop(columns=["eol"], inplace=True)
+                cleaned_df_type["life_ratio"] = (
+                    cleaned_df_type["time_in_cycles"]
+                    / cleaned_df_type["total_lifetime"]
+                )
+                cleaned_df_type["RUL"] = (
+                    cleaned_df_type["total_lifetime"]
+                    - cleaned_df_type["time_in_cycles"]
+                )
             save_csv_to_minio(
                 df=cleaned_df_type,
                 df_name=f"{df_type}_{df_key}.txt",

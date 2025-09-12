@@ -9,5 +9,3 @@ s3fs~=2025.7.0
  matplotlib
  seaborn
  scikit-learn
- torch
- torchvision

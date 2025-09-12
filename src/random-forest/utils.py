@@ -1,33 +1,7 @@
 from minio import Minio, S3Error
 import pandas as pd
-
-
-def load_from_minio(
-    minio_url: str,
-    bucket_name: str,
-    data_folder: str,
-    access_key: str,
-    secret_key: str,
-) -> list[tuple[str, pd.DataFrame]]:
-    files = minio_ls(
-        address=minio_url,
-        access_key=access_key,
-        secret_key=secret_key,
-        bucket_name=bucket_name,
-        folder=data_folder,
-        extention_=".txt",
-        use_exetention=False,
-    )
-    if not files:
-        raise FileNotFoundError(
-            f"No files found at {minio_url}/{bucket_name}/{data_folder}"
-        )
-    dfs: list[tuple[str, pd.DataFrame]] = []
-    for file_name, file_obj in files:
-        if "readme.txt" in file_name:
-            continue
-        dfs.append((file_name, pd.read_csv(file_obj)))
-    return dfs
+import pickle
+import io
 
 
 def minio_ls(
@@ -75,3 +49,77 @@ def minio_ls(
             )
 
     return to_return
+
+
+def load_from_minio(
+    minio_url: str,
+    bucket_name: str,
+    data_folder: str,
+    access_key: str,
+    secret_key: str,
+    extension: str = ".csv",
+) -> dict:
+    files = minio_ls(
+        address=minio_url,
+        access_key=access_key,
+        secret_key=secret_key,
+        bucket_name=bucket_name,
+        folder=data_folder,
+        extention_=extension,
+        use_exetention=False,
+    )
+    if not files:
+        raise S3Error("No files found!")
+    dfs: dict = {}
+    for file_name, file_obj in files:
+        # skip irrelevant files
+        if (
+            not file_name.endswith(extension)
+            or "readme" in file_name.lower()
+            or "x" + extension in file_name.lower()
+        ):
+            continue
+        dataset_type, dataset_id = (
+            file_name[file_name.rfind("/") + 1 :].replace(extension, "").split("_", 1)
+        )
+        # map RUL files to a consistent key
+        key = "RUL" if dataset_type.lower() == "rul" else dataset_type.lower()
+
+        # initialize dict for this dataset_id if needed
+        if dataset_id not in dfs:
+            dfs[dataset_id] = {}
+
+        # read CSV and assign to correct slot
+        dfs[dataset_id][key] = (
+            pd.read_csv(file_obj)
+            if dataset_id == "RUL" or dataset_id == "rul"
+            else pd.read_csv(file_obj, sep=" ", low_memory=False)
+        )
+
+    return dfs
+
+
+def pickle_to_minio(
+    object: object,
+    object_name: str,
+    minio_url: str,
+    access_key: str,
+    secret_key: str,
+    minio_bucket: str,
+    folder: str,
+) -> None:
+
+    client = Minio(
+        minio_url.replace("http://", "").replace("https://", ""),
+        access_key=access_key,
+        secret_key=secret_key,
+        secure=False,
+    )
+    pickle_buffer = io.BytesIO()
+    serialized = pickle.dumps(object, protocol=pickle.DEFAULT_PROTOCOL)
+    client.put_object(
+        minio_bucket,
+        folder + "/" + object_name + ".pkl",
+        io.BytesIO(serialized),
+        length=len(serialized),
+    )

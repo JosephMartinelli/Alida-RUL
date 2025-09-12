@@ -115,7 +115,6 @@ def load_from_minio(
         use_exetention=False,
     )
     dfs: dict = {}
-    print(files)
     for file_name, file_obj in files:
         # skip irrelevant files
         if (

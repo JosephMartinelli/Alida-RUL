@@ -22,31 +22,31 @@ parser.add_argument(
     required=True,
 )
 
-# parser.add_argument("--output-dataset", dest="output_dataset", type=str, required=True)
-# parser.add_argument(
-#     "--output-dataset.minio_bucket",
-#     dest="output_dataset_minio_bucket",
-#     type=str,
-#     required=True,
-# )
-# parser.add_argument(
-#     "--output-dataset.minIO_URL",
-#     dest="output_dataset_minio_url",
-#     type=str,
-#     required=True,
-# )
-# parser.add_argument(
-#     "--output-dataset.minIO_ACCESS_KEY",
-#     dest="output_dataset_access_key",
-#     type=str,
-#     required=True,
-# )
-# parser.add_argument(
-#     "--output-dataset.minIO_SECRET_KEY",
-#     dest="output_dataset_secret_key",
-#     type=str,
-#     required=True,
-# )
+parser.add_argument("--output-model", dest="output_model", type=str, required=True)
+parser.add_argument(
+    "--output-model.minio_bucket",
+    dest="output_model_minio_bucket",
+    type=str,
+    required=True,
+)
+parser.add_argument(
+    "--output-model.minIO_URL",
+    dest="output_model_minio_url",
+    type=str,
+    required=True,
+)
+parser.add_argument(
+    "--output-model.minIO_ACCESS_KEY",
+    dest="output_model_access_key",
+    type=str,
+    required=True,
+)
+parser.add_argument(
+    "--output-model.minIO_SECRET_KEY",
+    dest="output_model_secret_key",
+    type=str,
+    required=True,
+)
 
 
 parser.add_argument(
