@@ -8,25 +8,45 @@ def load_from_minio(
     data_folder: str,
     access_key: str,
     secret_key: str,
-) -> list[tuple[str, pd.DataFrame]]:
+    extension: str = ".csv",
+) -> dict:
     files = minio_ls(
         address=minio_url,
         access_key=access_key,
         secret_key=secret_key,
         bucket_name=bucket_name,
         folder=data_folder,
-        extention_=".txt",
+        extention_=extension,
         use_exetention=False,
     )
     if not files:
-        raise FileNotFoundError(
-            f"No files found at {minio_url}/{bucket_name}/{data_folder}"
-        )
-    dfs: list[tuple[str, pd.DataFrame]] = []
+        raise RuntimeError("No files found!")
+    dfs: dict = {}
     for file_name, file_obj in files:
-        if "readme.txt" in file_name:
+        # skip irrelevant files
+        if (
+            not file_name.endswith(extension)
+            or "readme" in file_name.lower()
+            or "x" + extension in file_name.lower()
+        ):
             continue
-        dfs.append((file_name, pd.read_csv(file_obj)))
+        dataset_type, dataset_id = (
+            file_name[file_name.rfind("/") + 1 :].replace(extension, "").split("_", 1)
+        )
+        # map RUL files to a consistent key
+        key = "RUL" if dataset_type.lower() == "rul" else dataset_type.lower()
+
+        # initialize dict for this dataset_id if needed
+        if dataset_id not in dfs:
+            dfs[dataset_id] = {}
+
+        # read CSV and assign to correct slot
+        dfs[dataset_id][key] = (
+            pd.read_csv(file_obj)
+            if dataset_id == "RUL" or dataset_id == "rul"
+            else pd.read_csv(file_obj, sep=" ", low_memory=False)
+        )
+
     return dfs
 
 

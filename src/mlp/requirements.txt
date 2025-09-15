@@ -1,0 +1,12 @@
+pandas~=2.3.1
+minio~=7.2.16
+boto3
+requests
+s3fs~=2025.7.0
+ fsspec
+ tox
+ tox-conda
+ matplotlib
+ seaborn
+ torch
+ sklearn
