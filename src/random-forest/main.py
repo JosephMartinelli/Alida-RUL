@@ -1,5 +1,8 @@
 from utils import load_from_minio, pickle_to_minio
-from arguments import args
+
+# from arguments import args
+from alidaparse.input import InDataset, InParam
+from alidaparse.output import OutModel
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import RandomizedSearchCV
@@ -19,25 +22,27 @@ def concat_data(
     return pd.concat(train, ignore_index=True), pd.concat(test, ignore_index=True)
 
 
-def save_model_and_params(estimator: RandomizedSearchCV, params: dict) -> None:
+def save_model_and_params(
+    estimator: RandomizedSearchCV, params: dict, output_model: OutModel
+) -> None:
     # Save with pickle
     pickle_to_minio(
-        estimator.best_params_,
+        params,
         "params",
-        args.output_model_minio_url,
-        args.output_model_access_key,
-        args.output_model_secret_key,
-        args.output_model_minio_bucket,
-        args.output_model,
+        output_model.minio_url,
+        output_model.access_key,
+        output_model.secret_key,
+        output_model.minio_bucket,
+        output_model.model,
     )
     pickle_to_minio(
-        params,
+        estimator,
         "random-forest-model",
-        args.output_model_minio_url,
-        args.output_model_access_key,
-        args.output_model_secret_key,
-        args.output_model_minio_bucket,
-        args.output_model,
+        output_model.minio_url,
+        output_model.access_key,
+        output_model.secret_key,
+        output_model.minio_bucket,
+        output_model.model,
     )
 
 
@@ -54,7 +59,15 @@ def plot_true_vs_pred_life_ratio(y_test, y_pred):
 def plot_unit_time_series(estimator, test_df, unit_id, target_col="life_ratio"):
     unit_data = test_df[test_df["unit_number"] == unit_id].copy()
     X_unit = unit_data.drop(
-        columns=[target_col, "unit_number", "eol", "time_in_cycles"], errors="ignore"
+        columns=[
+            target_col,
+            "unit_number",
+            "eol",
+            "time_in_cycles",
+            "RUL",
+            "total_lifetime",
+        ],
+        errors="ignore",
     )
     y_true = unit_data[target_col].values
     y_pred = estimator.predict(X_unit)
@@ -74,7 +87,12 @@ def plot_unit_time_series(estimator, test_df, unit_id, target_col="life_ratio"):
 
 
 def predict_life_ratio(
-    clf: RandomizedSearchCV, train: pd.DataFrame, test: pd.DataFrame, param_dist: dict
+    clf: RandomizedSearchCV,
+    train: pd.DataFrame,
+    test: pd.DataFrame,
+    param_dist: dict,
+    test_for_one_unit: pd.DataFrame,
+    show_plots: bool = False,
 ) -> None:
     print(train.shape, test.shape)
     print(train.columns, test.columns)
@@ -82,7 +100,16 @@ def predict_life_ratio(
         columns=["RUL", "unit_number", "total_lifetime", "life_ratio", "time_in_cycles"]
     )
     y_train = train["life_ratio"]
-    X_test = test.drop(columns=["life_ratio", "unit_number", "eol", "time_in_cycles"])
+    X_test = test.drop(
+        columns=[
+            "RUL",
+            "unit_number",
+            "total_lifetime",
+            "life_ratio",
+            "eol",
+            "time_in_cycles",
+        ]
+    )
     y_test = test["life_ratio"]
     random_search = RandomizedSearchCV(
         clf,
@@ -94,8 +121,9 @@ def predict_life_ratio(
         n_iter=20,
     )
     random_search.fit(X_train, y_train)
+    params = random_search.best_params_
     # Best hyperparameters
-    print("Best parameters:", random_search.best_params_)
+    print("Best parameters:", params)
     # Best model
     best_rf = random_search.best_estimator_
     # Calculating metrics
@@ -108,10 +136,10 @@ def predict_life_ratio(
     print(f"Test MAE: {mae:.2f}")
     print(f"Test RMSE: {rmse:.2f}")
     print(f"Test R²: {r2:.2f}")
-    if args.show_plots:
+    if show_plots:
         plot_true_vs_pred_life_ratio(y_test, y_pred)
-        plot_unit_time_series(best_rf, test, 1)
-    save_model_and_params(best_rf, random_search.best_params_)
+        plot_unit_time_series(best_rf, test_for_one_unit, 1)
+    save_model_and_params(best_rf, params)
 
 
 def predict_RUL(
@@ -198,22 +226,28 @@ def predict_RUL(
 if __name__ == "__main__":
     import logging
 
-    logging.warning(str(args))
+    dataset = InDataset.from_cli()
+    out_model = OutModel.from_cli()
+    show_plots = InParam.from_cli(
+        name="show_plot", required=True, param_type=bool
+    ).param_value
     dfs = load_from_minio(
-        minio_url=args.input_minio_url,
-        bucket_name=args.input_minio_bucket,
-        data_folder=args.input_dataset,
-        access_key=args.input_access_key,
-        secret_key=args.input_secret_key,
+        minio_url=dataset.minio_url,
+        bucket_name=dataset.minio_bucket,
+        data_folder=dataset.dataset,
+        access_key=dataset.access_key,
+        secret_key=dataset.secret_key,
     )
     train, test = concat_data(dfs)
     clf = RandomForestRegressor(n_estimators=15, random_state=42)
     param_dist = {
-        "n_estimators": [5, 10, 15],
-        "max_depth": [None, 10],
-        "min_samples_split": [2, 4],
-        "min_samples_leaf": [10, 2],
-        "max_features": [None, "sqrt", "log2"],
+        "n_estimators": [10],
+        "max_depth": [10],
+        "min_samples_split": [4],
+        "min_samples_leaf": [2],
+        "max_features": ["log2"],
     }
-    # predict_life_ratio(clf, train, test, param_dist)
-    predict_RUL(clf, train, test, param_dist)
+    predict_life_ratio(
+        clf, train, test, param_dist, dfs["FD001"]["test"], show_plots=show_plots
+    )
+    # predict_RUL(clf, train, test, param_dist)

@@ -13,3 +13,5 @@ wheels/
 src/config.env
 src/Minio_folder
 src/docker-compose-dev.yaml
+src/alida-message
+src/alida-test-output

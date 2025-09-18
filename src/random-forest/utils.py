@@ -2,6 +2,7 @@ from minio import Minio, S3Error
 import pandas as pd
 import pickle
 import io
+import logging
 
 
 def minio_ls(
@@ -115,8 +116,8 @@ def pickle_to_minio(
         secret_key=secret_key,
         secure=False,
     )
-    pickle_buffer = io.BytesIO()
     serialized = pickle.dumps(object, protocol=pickle.DEFAULT_PROTOCOL)
+    logging.info(f"Uploading {object_name}.pkl to {minio_bucket}/{object_name}")
     client.put_object(
         minio_bucket,
         folder + "/" + object_name + ".pkl",
