@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
-import torch.optim as optim
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
 import numpy as np
 
 # Set device
@@ -11,8 +10,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # 1. Dataset class
 class RULDataset(Dataset):
     def __init__(self, dataframe):
-        self.X = dataframe.drop(columns=["RUL"]).values.astype(np.float32)
-        self.y = dataframe["RUL"].values.astype(np.float32).reshape(-1, 1)
+        self.X = dataframe.drop(columns=["life_ratio"]).values.astype(np.float32)
+        self.y = dataframe["life_ratio"].values.astype(np.float32).reshape(-1, 1)
 
     def __len__(self):
         return len(self.X)

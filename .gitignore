@@ -15,3 +15,7 @@ src/Minio_folder
 src/docker-compose-dev.yaml
 src/alida-message
 src/alida-test-output
+/src/message-test/vendor/
+/src/message-test/Dockerfile-dev
+/src/message-test/requirements-dev.txt
+/src/cnn/
