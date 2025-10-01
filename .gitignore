@@ -8,6 +8,8 @@ wheels/
 
 # Virtual environments
 .venv
+.vendor
+.fewshot-venv
 /nasa-cmaps/processed/
 /nasa-cmaps/CMaps/
 src/config.env
@@ -15,7 +17,7 @@ src/Minio_folder
 src/docker-compose-dev.yaml
 src/alida-message
 src/alida-test-output
-/src/message-test/vendor/
+/.vendor/
 /src/message-test/Dockerfile-dev
 /src/message-test/requirements-dev.txt
 /src/cnn/
