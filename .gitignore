@@ -21,3 +21,6 @@ src/alida-test-output
 /src/message-test/Dockerfile-dev
 /src/message-test/requirements-dev.txt
 /src/cnn/
+/src/few-shot/support_set/
+/src/few-shot/save_checkpoints/
+/src/few-shot/MVTEc/
